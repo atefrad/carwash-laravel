@@ -168,9 +168,9 @@ class AppointmentController extends Controller
 
         if($fastestTimeStationOne < $fastestTimeStationTwo)
         {
-            return response()->json(["fastest_time" => $fastestTimeStationOne, "station" => 1]);
+            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationOne)), "station" => 1]);
         }else{
-            return response()->json(["fastest_time" => $fastestTimeStationTwo, "station" => 2]);
+            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationTwo)), "station" => 2]);
         }
 
     }
