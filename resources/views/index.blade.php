@@ -50,6 +50,17 @@
         </div>
         <!-- Carousel End -->
 
+        @if(session('success'))
+         <div class="table-responsive">
+             <table class="table table-striped table-hover">
+                 <tr>
+                     <th>name</th>
+                     <td>{{ $appointment->name }}</td>
+                 </tr>
+             </table>
+         </div>
+        @endif
+
 
         <!-- About Start -->
         <div class="about">

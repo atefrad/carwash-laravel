@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Appointment extends Model
@@ -15,9 +16,20 @@ class Appointment extends Model
         'service_id',
         'phone',
         'name',
-        'time',
+        'start_time',
+        'finish_time',
         'station',
         'tracking_code'
     ];
 
+    protected $with = [
+        'service'
+    ];
+
+    //region relation
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class);
+    }
+    //endregion
 }

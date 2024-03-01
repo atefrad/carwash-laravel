@@ -1,7 +1,6 @@
 @extends('layouts.main')
 
 @section('content')
-
     <!-- Page Header Start -->
     <div class="page-header">
         <div class="container">
@@ -23,12 +22,6 @@
     <div class="location">
         <div class="container">
             <div class="row">
-{{--                <div class="col-lg-7">--}}
-{{--                    <div class="section-header text-left">--}}
-{{--                        <p>Washing Points</p>--}}
-{{--                        <h2>Car Washing & Care Points</h2>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
                 <div class="col-lg-5 offset-lg-4">
                     <div class="section-header text-center">
                         <p>Appointments</p>
@@ -41,34 +34,47 @@
                             @csrf
 
                             <div class="control-group">
-                                <input type="text" class="form-control" name="name" placeholder="Name" required="required" />
+                                <input type="text" class="form-control" name="name" placeholder="Name" required="required" value="{{ old('name') }}" />
+                                @error('name')
+                                <span> {{ $message }} </span>
+                                @enderror
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control" name="phone" placeholder="Phone" required="required" />
+                                <input type="text" class="form-control" name="phone" placeholder="Phone" required="required" value="{{ old('phone') }}" />
+                                @error('phone')
+                                <span> {{ $message }} </span>
+                                @enderror
                             </div>
                             <div class="control-group">
-                                <select class="form-control" name="service" id="service_selectBox" required="required" >
+                                <select class="form-control" name="service_id" id="service_selectBox" required="required" >
                                     <option disabled selected value="">Please select a service</option>
-                                    <option class="text-dark" value="1">Exterior Wash</option>
-                                    <option class="text-dark" value="2">Interior Cleaning</option>
-                                    <option class="text-dark" value="3">Full Service</option>
+                                    @foreach($services as $service)
+                                        <option {{ old('service_id') == $service->id ? 'selected' : '' }} class="text-dark" value="{{ $service->id }}">{{ $service->name }}</option>
+                                    @endforeach
                                 </select>
+                                @error('service_id')
+                                <span> {{ $message }} </span>
+                                @enderror
                             </div>
                             <div class="form-check my-3 text-light">
-                                <input type="radio" class="form-check-input" name="time_options" id="fastest_time" value="" required="required" />
-                                <label class="form-check-label my-1" for="fastest_time">
+                                <input type="radio" class="form-check-input" name="fastest_time" id="fastest_time" value="" required="required" />
+                                <label class="form-check-label" for="fastest_time">
                                     The fastest possible time
-                                    <span class="d-block bg-light text-danger rounded p-1">1402/09/22 12:00-12:30</span>
+                                    <span id="fastest_time_span" class="d-none bg-light text-danger rounded p-1 pl-2 mt-2"></span>
                                 </label>
+                                <input id="fastest_time_station" type="hidden" name="station" value="">
                             </div>
                             <div class="form-check my-3 text-light">
-                                <input type="radio" class="form-check-input" name="time_options" id="reserve_time" required="required" />
+                                <input type="radio" class="form-check-input" name="fastest_time" id="reserve_time" required="required" />
                                 <label class="form-check-label" for="reserve_time">
                                     Reserve a time
                                 </label>
+                                @error('start_time')
+                                <span class="d-block text-dark"> {{ $message }} </span>
+                                @enderror
                             </div>
                             <div id="time_options_div" class="control-group d-none">
-                                <input type="datetime-local" class="form-control" name="time" id="time">
+                                <input type="datetime-local" class="form-control" name="start_time" id="time">
                             </div>
 {{--                            <div id="time_options_div" class="control-group d-none">--}}
 {{--                                <select class="form-control" name="time" id="service" required="required" >--}}
@@ -119,8 +125,12 @@
                 type: "GET",
                 dataType: 'json',
                 success: function (response) {
-                    // const myResponse = JSON.parse(response);
                     console.log(response);
+                    $('#fastest_time').val(response.fastest_time);
+                    $('#fastest_time_span').removeClass('d-none');
+                    $('#fastest_time_span').addClass('d-block');
+                    $('#fastest_time_span').text(response.fastest_time);
+                    $('#fastest_time_station').val(response.station);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("Status: " + textStatus);
