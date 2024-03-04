@@ -21,7 +21,7 @@ class ServiceSeeder extends Seeder
 
         Service::query()->create([
             'name' => 'interior cleaning',
-            'duration' => 20,
+            'duration' => 30,
             'price' => 30000
         ]);
 

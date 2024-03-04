@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appointments', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('time_id')->constrained('times');
-            $table->string('phone');
-            $table->string('name');
-            $table->string('tracking_code')->unique();
+            $table->string('company_name');
+            $table->json('working_time');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appointments');
+        Schema::dropIfExists('settings');
     }
 };

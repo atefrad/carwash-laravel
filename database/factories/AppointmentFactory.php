@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Time;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
@@ -17,16 +18,13 @@ class AppointmentFactory extends Factory
      */
     public function definition(): array
     {
-        $start_time = now()->addHours(rand(0,1500));
-        $finish_time = $start_time->copy()->addMinutes(30);
+        $time = Time::query()->inRandomOrder()->first();
+        $time->update(['is_active' => 0]);
 
         return [
-            'service_id' => rand(1, 3),
+            'time_id' => $time,
             'phone' => fake()->phoneNumber,
             'name' => fake()->name,
-            'start_time' => $start_time,
-            'finish_time' => $finish_time,
-            'station' => rand(1,2),
             'tracking_code' => rand(100000, 999999)
         ];
     }

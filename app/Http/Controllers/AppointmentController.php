@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Appointments\AppointmentStoreRequest;
 use App\Models\Appointment;
 use App\Models\Service;
-use http\Env\Response;
+use App\Models\Time;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class AppointmentController extends Controller
 {
@@ -26,7 +24,91 @@ class AppointmentController extends Controller
     public function create()
     {
         $services = Service::all();
-        return view('appointments.create', compact('services'));
+
+        $timesStationOne = Time::query()->active()->where('station', 1)->get();
+        $timesStationTwo = Time::query()->active()->where('station', 2)->get();
+
+        function fastestTimeEachStation($times): array
+        {
+            $serviceDuration = 60;
+            $timeSlotsNeeded = $serviceDuration/15;
+
+            $fastestTimeSlots = [];
+
+            for($i = 0; $i <  count($times); $i++)
+            {
+                if(count($fastestTimeSlots) == $timeSlotsNeeded)
+                {
+                    break;
+                }
+
+                if($times[$i]->finish_time === $times[$i+1]->start_time)
+                {
+                    for($j = 1; $j < count($fastestTimeSlots); $j++)
+                    {
+                        if($fastestTimeSlots[$j]->start_time != $fastestTimeSlots[$j-1]->finish_time)
+                        {
+                            $fastestTimeSlots = [];
+
+                            break;
+                        }
+                    }
+
+                    $fastestTimeSlots[] = $times[$i];
+                }
+            }
+
+            return $fastestTimeSlots;
+        }
+
+
+        $fastestTimeStationOne = fastestTimeEachStation($timesStationOne);
+        $fastestTimeStationTwo = fastestTimeEachStation($timesStationTwo);
+
+        if($fastestTimeStationOne[0]->year === $fastestTimeStationTwo[0]->year)
+        {
+            if($fastestTimeStationOne[0]->month === $fastestTimeStationTwo[0]->month)
+            {
+                if($fastestTimeStationOne[0]->day === $fastestTimeStationTwo[0]->day)
+                {
+                    if($fastestTimeStationOne[0]->start_time <= $fastestTimeStationTwo[0]->start_time)
+                    {
+                        $fastestTime = $fastestTimeStationOne;
+
+                    }else if($fastestTimeStationOne[0]->start_time > $fastestTimeStationTwo[0]->start_time)
+                    {
+                        $fastestTime = $fastestTimeStationTwo;
+                    }
+
+                }else if($fastestTimeStationOne[0]->day < $fastestTimeStationTwo[0]->day)
+                {
+                    $fastestTime = $fastestTimeStationOne;
+
+                }else if($fastestTimeStationOne[0]->day > $fastestTimeStationTwo[0]->day)
+                {
+                    $fastestTime = $fastestTimeStationTwo;
+                }
+
+            }else if($fastestTimeStationOne[0]->month < $fastestTimeStationTwo[0]->month)
+            {
+                $fastestTime = $fastestTimeStationOne;
+
+            }else if($fastestTimeStationOne[0]->month > $fastestTimeStationTwo[0]->month)
+            {
+                $fastestTime = $fastestTimeStationTwo;
+            }
+
+        }else if($fastestTimeStationOne[0]->year < $fastestTimeStationTwo[0]->year)
+        {
+            $fastestTime = $fastestTimeStationOne;
+
+        }else if($fastestTimeStationOne[0]->year > $fastestTimeStationTwo[0]->year)
+        {
+            $fastestTime = $fastestTimeStationTwo;
+        }
+
+        dd($fastestTime);
+//        return view('appointments.create', compact('services'));
     }
 
     /**
@@ -73,105 +155,105 @@ class AppointmentController extends Controller
 
     public function fastestTime()
     {
-        function isBetweenNineAndTwentyOne($dateTime): bool
-        {
-            $hour = substr($dateTime, 11, 2);
-
-            return ($hour >= 9 && $hour < 21);
-        }
-
-        $appointmentsStationOne = Appointment::query()
-            ->where('start_time', '>', now())
-            ->where('station',1)
-            ->orderBy('start_time')
-            ->get();
-
-        $appointmentsStationTwo = Appointment::query()
-            ->where('start_time', '>', now())
-            ->where('station',2)
-            ->orderBy('start_time')
-            ->get();
-
-        function fastestAppointmentTime($appointments, $stationId)
-        {
-            $serviceId = $_GET['service_id'];
-
-            $serviceDuration = Service::query()->where('id', $serviceId)->first()->duration;
-
-            $count = count($appointments);
-
-//            $startOfTheDay = Carbon::createFromTimeString('09:00');
-//            $endOfTheDay = Carbon::createFromTimeString('21:00');
-
-            //check to see if shop is open now
-//            $isShopOpenNow = now()->between($startOfTheDay, $endOfTheDay);
-            $isShopOpenNow = isBetweenNineAndTwentyOne(now());
-
-            //check to see if there is enough time to accept a new appointment. I reserved 30 minutes time before giving the appointment so the user can have enough time to get there.
-            $isEnoughTimeLeft = (strtotime(Carbon::createFromTimeString('21:00')) - strtotime(now()))/60 > 30 + $serviceDuration;
-
-            if($isShopOpenNow && $isEnoughTimeLeft)
-            {
-                if((strtotime($appointments[0]->start_time) - strtotime(now()))/60 > (30 + $serviceDuration))
-                {
-                     return now()->addMinutes(30);
-                }
-            }
-
-            //------------------------------------------------------
-            //TO DO!!
-            //check to see if there is time before first appointment
-            if(now()->format('H') >= 21 && now()->format('H') < 24)
-            {
-                $nextDayFirstTime = str_replace(now()->addDay()->format('H:i:s'),'09:00:00',now()->addDay());
-
-            }else if (now()->format('H') >= 0 && now()->format('H') < 9) {
-
-                $nextDayFirstTime = str_replace(now()->format('H:i:s'),'09:00:00',now());
-            }
-            $nextDayFirstAppointment = Appointment::query()->where('start_time','>=', $nextDayFirstTime)->where('station', $stationId)->orderBy('start_time')->first();
-
-            if(strtotime($nextDayFirstAppointment->start_time) - strtotime($nextDayFirstTime)/60 > $serviceDuration)
-        {
-            return $nextDayFirstTime;
-        }
-            //------------------------------------------------------
-
-            for($i = 1; $i < $count; $i++)
-            {
-                if(
-                    (strtotime($appointments[$i]->start_time) - strtotime($appointments[$i - 1]->finish_time))/60
-                    > $serviceDuration
-                    && isBetweenNineAndTwentyOne(Carbon::createFromTimestamp(
-                        strtotime($appointments[$i - 1]->finish_time) +($serviceDuration * 60)))
-                )
-                {
-                    return $appointments[$i - 1]->finish_time;
-
-                }
-            }
-
-            if(isBetweenNineAndTwentyOne(Carbon::createFromTimestamp(
-                strtotime($appointments[$count - 1]->finish_time) + ($serviceDuration * 60))))
-            {
-                return  $appointments[$count - 1]->finish_time;
-            }
-            else {
-                return Carbon::createFromTimestamp(
-                    strtotime($appointments[$count - 1]->finish_time))->addHours(12);
-            }
-        }
-
-        $fastestTimeStationOne = fastestAppointmentTime($appointmentsStationOne, 1);
-
-        $fastestTimeStationTwo = fastestAppointmentTime($appointmentsStationTwo, 2);
-
-        if($fastestTimeStationOne < $fastestTimeStationTwo)
-        {
-            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationOne)), "station" => 1]);
-        }else{
-            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationTwo)), "station" => 2]);
-        }
+//        function isBetweenNineAndTwentyOne($dateTime): bool
+//        {
+//            $hour = substr($dateTime, 11, 2);
+//
+//            return ($hour >= 9 && $hour < 21);
+//        }
+//
+//        $appointmentsStationOne = Appointment::query()
+//            ->where('start_time', '>', now())
+//            ->where('station',1)
+//            ->orderBy('start_time')
+//            ->get();
+//
+//        $appointmentsStationTwo = Appointment::query()
+//            ->where('start_time', '>', now())
+//            ->where('station',2)
+//            ->orderBy('start_time')
+//            ->get();
+//
+//        function fastestAppointmentTime($appointments, $stationId)
+//        {
+//            $serviceId = $_GET['service_id'];
+//
+//            $serviceDuration = Service::query()->where('id', $serviceId)->first()->duration;
+//
+//            $count = count($appointments);
+//
+////            $startOfTheDay = Carbon::createFromTimeString('09:00');
+////            $endOfTheDay = Carbon::createFromTimeString('21:00');
+//
+//            //check to see if shop is open now
+////            $isShopOpenNow = now()->between($startOfTheDay, $endOfTheDay);
+//            $isShopOpenNow = isBetweenNineAndTwentyOne(now());
+//
+//            //check to see if there is enough time to accept a new appointment. I reserved 30 minutes time before giving the appointment so the user can have enough time to get there.
+//            $isEnoughTimeLeft = (strtotime(Carbon::createFromTimeString('21:00')) - strtotime(now()))/60 > 30 + $serviceDuration;
+//
+//            if($isShopOpenNow && $isEnoughTimeLeft)
+//            {
+//                if((strtotime($appointments[0]->start_time) - strtotime(now()))/60 > (30 + $serviceDuration))
+//                {
+//                     return now()->addMinutes(30);
+//                }
+//            }
+//
+//            //------------------------------------------------------
+//            //TO DO!!
+//            //check to see if there is time before first appointment
+//            if(now()->format('H') >= 21 && now()->format('H') < 24)
+//            {
+//                $nextDayFirstTime = str_replace(now()->addDay()->format('H:i:s'),'09:00:00',now()->addDay());
+//
+//            }else if (now()->format('H') >= 0 && now()->format('H') < 9) {
+//
+//                $nextDayFirstTime = str_replace(now()->format('H:i:s'),'09:00:00',now());
+//            }
+//            $nextDayFirstAppointment = Appointment::query()->where('start_time','>=', $nextDayFirstTime)->where('station', $stationId)->orderBy('start_time')->first();
+//
+//            if(strtotime($nextDayFirstAppointment->start_time) - strtotime($nextDayFirstTime)/60 > $serviceDuration)
+//        {
+//            return $nextDayFirstTime;
+//        }
+//            //------------------------------------------------------
+//
+//            for($i = 1; $i < $count; $i++)
+//            {
+//                if(
+//                    (strtotime($appointments[$i]->start_time) - strtotime($appointments[$i - 1]->finish_time))/60
+//                    > $serviceDuration
+//                    && isBetweenNineAndTwentyOne(Carbon::createFromTimestamp(
+//                        strtotime($appointments[$i - 1]->finish_time) +($serviceDuration * 60)))
+//                )
+//                {
+//                    return $appointments[$i - 1]->finish_time;
+//
+//                }
+//            }
+//
+//            if(isBetweenNineAndTwentyOne(Carbon::createFromTimestamp(
+//                strtotime($appointments[$count - 1]->finish_time) + ($serviceDuration * 60))))
+//            {
+//                return  $appointments[$count - 1]->finish_time;
+//            }
+//            else {
+//                return Carbon::createFromTimestamp(
+//                    strtotime($appointments[$count - 1]->finish_time))->addHours(12);
+//            }
+//        }
+//
+//        $fastestTimeStationOne = fastestAppointmentTime($appointmentsStationOne, 1);
+//
+//        $fastestTimeStationTwo = fastestAppointmentTime($appointmentsStationTwo, 2);
+//
+//        if($fastestTimeStationOne < $fastestTimeStationTwo)
+//        {
+//            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationOne)), "station" => 1]);
+//        }else{
+//            return response()->json(["fastest_time" => date("Y-m-d H:i",strtotime($fastestTimeStationTwo)), "station" => 2]);
+//        }
 
     }
 }

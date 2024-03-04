@@ -45,13 +45,21 @@
                                 <span> {{ $message }} </span>
                                 @enderror
                             </div>
-                            <div class="control-group">
-                                <select class="form-control" name="service_id" id="service_selectBox" required="required" >
-                                    <option disabled selected value="">Please select a service</option>
-                                    @foreach($services as $service)
-                                        <option {{ old('service_id') == $service->id ? 'selected' : '' }} class="text-dark" value="{{ $service->id }}">{{ $service->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="control-group border border-white rounded p-3">
+{{--                                <select class="form-control" name="service_id" id="service_selectBox" required="required" multiple>--}}
+{{--                                    <option disabled selected value="">Please select a service</option>--}}
+{{--                                    @foreach($services as $service)--}}
+{{--                                        <option {{ old('service_id') == $service->id ? 'selected' : '' }} class="text-dark" value="{{ $service->id }}">{{ $service->name }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+                                <p class="text-light">Carwash services : </p>
+                                @foreach($services as $service)
+                                    <div class="form-check form-check-inline text-light">
+                                        <input class="form-check-input" type="checkbox" id="{{ $service->name }}" name="services[]" value="{{ $service->id }}">
+                                        <label class="form-check-label" for="{{ $service->name }}">{{ $service->name }}</label>
+                                    </div>
+                                @endforeach
+
                                 @error('service_id')
                                 <span> {{ $message }} </span>
                                 @enderror

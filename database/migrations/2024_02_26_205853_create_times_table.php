@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appointments', function (Blueprint $table) {
+        Schema::create('times', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('time_id')->constrained('times');
-            $table->string('phone');
-            $table->string('name');
-            $table->string('tracking_code')->unique();
+            $table->tinyInteger('station');
+            $table->time('start_time');
+            $table->time('finish_time');
+            $table->unsignedInteger('day');
+            $table->unsignedInteger('month');
+            $table->unsignedInteger('year')->default(2024);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appointments');
+        Schema::dropIfExists('times');
     }
 };

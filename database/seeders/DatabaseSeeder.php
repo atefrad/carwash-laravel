@@ -20,8 +20,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            SettingSeeder::class,
             ServiceSeeder::class,
-            AppointmentSeeder::class
+            TimeSeeder::class,
+            AppointmentSeeder::class,
         ]);
     }
 }

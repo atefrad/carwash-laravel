@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="carwash" id="Project_1701" database="MySql" >
+	<comment><![CDATA[carwash appointment reservation system]]></comment>
+	<schema name="carwash_laravel" >
+		<table name="appointments" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="time_id" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="phone" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="tracking_code" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" />
+			<column name="deleted_at" type="timestamp" jt="93" />
+			<index name="pk_appointments_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_appointments" unique="UNIQUE_KEY" >
+				<column name="tracking_code" />
+			</index>
+			<index name="idx_appointments_time_id" unique="UNIQUE_KEY" >
+				<column name="time_id" />
+			</index>
+			<fk name="fk_appointments_times" to_schema="carwash_laravel" to_table="times" delete_action="cascade" update_action="cascade" >
+				<fk_column name="time_id" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="service_appointment" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="service_id" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="appointment_id" type="bigint" jt="-5" mandatory="y" unsigned="y" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<column name="updated_at" type="timestamp" jt="93" />
+			<index name="pk_service_appointment_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_service_appointment" to_schema="carwash_laravel" to_table="services" delete_action="cascade" update_action="cascade" >
+				<fk_column name="service_id" pk="id" />
+			</fk>
+			<fk name="fk_service_appointment_appointment_id" to_schema="carwash_laravel" to_table="appointments" delete_action="cascade" update_action="cascade" >
+				<fk_column name="appointment_id" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="services" prior="tbl" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="name" type="varchar" length="100" jt="12" />
+			<column name="price" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="duration" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="status" type="boolean" length="1" jt="-7" >
+				<defo><![CDATA[1]]></defo>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" />
+			<column name="deleted_at" type="timestamp" jt="93" />
+			<index name="pk_services_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="setting" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="company_name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="working_time" type="json" jt="2000" mandatory="y" />
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated_at" type="date" jt="91" />
+			<index name="pk_setting_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="times" >
+			<column name="id" type="bigint" jt="-5" mandatory="y" unsigned="y" autoincrement="y" />
+			<column name="station" type="tinyint" jt="-6" mandatory="y" unsigned="y" />
+			<column name="start_time" type="time" jt="92" mandatory="y" />
+			<column name="finish_time" type="time" jt="92" />
+			<column name="day_of_month" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="month" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="year" type="int" jt="4" unsigned="y" >
+				<defo><![CDATA[2024]]></defo>
+			</column>
+			<column name="is_active" type="boolean" jt="-7" mandatory="y" >
+				<defo><![CDATA[1]]></defo>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<column name="updated_at" type="timestamp" jt="93" />
+			<column name="deleted_at" type="timestamp" jt="93" />
+			<index name="pk_times_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+	</schema>
+	<connector name="MyDb" database="MySql" host="localhost" port="3306" user="root" />
+	<layout name="Default Layout" id="Layout_1a32" show_relation="columns" >
+		<entity schema="carwash_laravel" name="appointments" color="C1D8EE" x="512" y="64" />
+		<entity schema="carwash_laravel" name="service_appointment" color="C1D8EE" x="320" y="368" />
+		<entity schema="carwash_laravel" name="services" color="C1D8EE" x="48" y="64" />
+		<entity schema="carwash_laravel" name="setting" color="C1D8EE" x="640" y="336" />
+		<entity schema="carwash_laravel" name="times" color="C1D8EE" x="240" y="48" />
+	</layout>
+</project>

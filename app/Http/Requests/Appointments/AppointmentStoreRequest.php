@@ -26,11 +26,11 @@ class AppointmentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3'],
-            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
-            'service_id' => ['required', 'integer', 'min:1', 'max:3'],
-            'start_time' => ['required_without:fastest_time', new BetweenNineAndTwentyOne, new TimeAvailable],
-//            'station_id' => ['nullable', 'integer']
+//            'name' => ['required', 'string', 'min:3'],
+//            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
+//            'service_id' => ['required', 'integer', 'min:1', 'max:3'],
+//            'start_time' => ['required_without:fastest_time', new BetweenNineAndTwentyOne, new TimeAvailable],
+////            'station_id' => ['nullable', 'integer']
         ];
     }
 
