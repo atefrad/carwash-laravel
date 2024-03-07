@@ -14,23 +14,26 @@ class Appointment extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'service_id',
         'phone',
         'name',
-        'start_time',
-        'finish_time',
-        'station',
+        'total_price',
         'tracking_code'
     ];
 
     protected $with = [
-        'service'
+        'services',
+        'times'
     ];
 
     //region relation
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class);
+    }
+
+    public function times(): BelongsToMany
+    {
+        return $this->belongsToMany(Time::class);
     }
     //endregion
 }

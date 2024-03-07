@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\TrackAppointmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +20,14 @@ Route::get('/', function () {
 })->name('home');
 
 Route::resource('appointments', AppointmentController::class);
+
+Route::prefix('/track-appointment')
+    ->controller(TrackAppointmentController::class)
+    ->name('trackAppointment.')
+    ->group(function () {
+        Route::get('/',  'create')->name('create');
+        Route::post('/', 'store')->name('store');
+    });
+
+
 

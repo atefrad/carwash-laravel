@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('times', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('station');
             $table->time('start_time');
             $table->time('finish_time');
             $table->unsignedInteger('day');
             $table->unsignedInteger('month');
-            $table->unsignedInteger('year')->default(2024);
-            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('year');
+//            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('count')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

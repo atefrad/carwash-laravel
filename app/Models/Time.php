@@ -12,6 +12,15 @@ class Time extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'start_time',
+        'finish_time',
+        'day',
+        'month',
+        'year',
+        'count',
+    ];
+
     protected static function booted(): void
     {
         static::addGlobalScope('newTimeSlots', function (Builder $builder) {
@@ -27,9 +36,13 @@ class Time extends Model
 
             if ($nowHour >= $opening_time && $nowHour < $closing_time) {
                 $builder->whereTime('start_time', '>=', $now->toTimeString())
-                    ->where('day', '>=', $now->day)
+                    ->where('day', '=', $now->day)
+                    ->where('month', '=', $now->month)
+                    ->where('year', '=', $now->year)
+                    ->orWhere('day', '>', $now->day)
                     ->where('month', '>=', $now->month)
                     ->where('year', '>=', $now->year);
+
 
             } else if ($nowHour >= $closing_time && $nowHour < 24) {
                 $builder->where('day', '>', $now->day)
@@ -46,6 +59,6 @@ class Time extends Model
 
     public function scopeActive(Builder $query): void
     {
-        $query->where('is_active', true);
+        $query->where('count', '<', 2);
     }
 }

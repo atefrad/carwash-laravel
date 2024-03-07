@@ -18,13 +18,10 @@ class AppointmentFactory extends Factory
      */
     public function definition(): array
     {
-        $time = Time::query()->inRandomOrder()->first();
-        $time->update(['is_active' => 0]);
-
         return [
-            'time_id' => $time,
             'phone' => fake()->phoneNumber,
             'name' => fake()->name,
+            'total_price' => rand(25000, 135000),
             'tracking_code' => rand(100000, 999999)
         ];
     }

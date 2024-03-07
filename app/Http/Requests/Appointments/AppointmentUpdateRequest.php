@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\Appointments;
 
-use App\Models\Appointment;
 use App\Models\Service;
-use App\Rules\BetweenNineAndTwentyOne;
 use App\Rules\TimeAvailable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AppointmentStoreRequest extends FormRequest
+class AppointmentUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -36,7 +34,6 @@ class AppointmentStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:3'],
-            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
             'services' => ['required', 'array', 'min:1'],
             'services.*' => ['required', 'integer', 'exists:services,id'],
             'time' => ['required', 'array', 'min:1'],
@@ -54,10 +51,8 @@ class AppointmentStoreRequest extends FormRequest
         }
 
         return array_merge(
-          parent::validated(),
-          [   'total_price' => $totalPrice,
-              'tracking_code' => rand(100000, 999999)
-          ]
+            parent::validated(),
+            ['total_price' => $totalPrice]
         );
     }
 }

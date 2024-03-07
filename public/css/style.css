@@ -2059,3 +2059,7 @@ a:focus {
 .font-size-40px {
     font-size: 40px !important;
 }
+
+.bg-main {
+    background-color: #202C45 !important;
+}

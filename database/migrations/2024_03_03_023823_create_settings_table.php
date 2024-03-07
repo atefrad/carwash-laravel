@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('company_name');
             $table->json('working_time');
+            $table->unsignedInteger('time_slot_duration');
             $table->timestamps();
             $table->softDeletes();
         });

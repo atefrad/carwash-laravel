@@ -18,7 +18,8 @@ class SettingSeeder extends Seeder
             'working_time' => [
                 'opening_time' => '09',
                 'closing_time' => '21'
-            ]
+            ],
+            'time_slot_duration' => 15
         ]);
     }
 }

@@ -15,8 +15,6 @@ class TimeSeeder extends Seeder
      */
     public function run(): void
     {
-        $stations = [1, 2];
-
         $today = Carbon::now();
         $tomorrow = $today->copy()->addDay();
         $dayAfterTomorrow = $tomorrow->copy()->addDay();
@@ -30,56 +28,50 @@ class TimeSeeder extends Seeder
 //        $todayMonth = $today->month;
 //        $todayYear = $today->year;
 
-        foreach($stations as $station)
-        {
             $days = [$today, $tomorrow, $dayAfterTomorrow];
 
-            foreach ($days as $day)
+        foreach ($days as $day)
+        {
+            for ($i = $opening_time; $i < $closing_time; $i ++)
             {
-                for ($i = $opening_time; $i < $closing_time; $i ++)
-                {
-                    Time::query()->create([
-                        'station' => $station,
-                        'start_time' => "0{$i}:00",
-                        'finish_time' => "0{$i}:15",
-                        'day' => $day->day,
-                        'month' => $day->month,
-                        'year' => $day->year,
-                        'is_active' => 1
-                    ]);
+                Time::query()->create([
+                    'start_time' => "0{$i}:00",
+                    'finish_time' => "0{$i}:15",
+                    'day' => $day->day,
+                    'month' => $day->month,
+                    'year' => $day->year,
+                    'count' => 0
+                ]);
 
-                    Time::query()->create([
-                        'station' => $station,
-                        'start_time' => "0{$i}:15",
-                        'finish_time' => "0{$i}:30",
-                        'day' => $day->day,
-                        'month' => $day->month,
-                        'year' => $day->year,
-                        'is_active' => 1
-                    ]);
+                Time::query()->create([
+                    'start_time' => "0{$i}:15",
+                    'finish_time' => "0{$i}:30",
+                    'day' => $day->day,
+                    'month' => $day->month,
+                    'year' => $day->year,
+                    'count' => 0
+                ]);
 
-                    Time::query()->create([
-                        'station' => $station,
-                        'start_time' => "0{$i}:30",
-                        'finish_time' => "0{$i}:45",
-                        'day' => $day->day,
-                        'month' => $day->month,
-                        'year' => $day->year,
-                        'is_active' => 1
-                    ]);
+                Time::query()->create([
+                    'start_time' => "0{$i}:30",
+                    'finish_time' => "0{$i}:45",
+                    'day' => $day->day,
+                    'month' => $day->month,
+                    'year' => $day->year,
+                    'count' => 0
+                ]);
 
-                    Time::query()->create([
-                        'station' => $station,
-                        'start_time' => "0{$i}:45",
-                        'finish_time' => $i + 1 . ":00",
-                        'day' => $day->day,
-                        'month' => $day->month,
-                        'year' => $day->year,
-                        'is_active' => 1
-                    ]);
-                }
-
+                Time::query()->create([
+                    'start_time' => "0{$i}:45",
+                    'finish_time' => $i + 1 . ":00",
+                    'day' => $day->day,
+                    'month' => $day->month,
+                    'year' => $day->year,
+                    'count' => 0
+                ]);
             }
+
         }
     }
+
 }
