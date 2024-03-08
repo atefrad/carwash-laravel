@@ -41,26 +41,15 @@ class AppointmentController extends Controller
         $appointment = Appointment::query()
             ->create($request->validated());
 
-        foreach ($request->safe()->only('services')['services'] as $service)
-        {
+        /**
+         * @var Appointment $appointment
+         */
+        $appointment->services()->attach($request->safe()->only('services')['services']);
 
-            DB::table('appointment_service')
-                ->insert([
-                    'service_id' => $service,
-                    'appointment_id' => $appointment->id,
-                    'created_at' => Carbon::now()
-                ]);
-        }
+        $appointment->times()->attach($request->safe()->only('time')['time']);
 
         foreach ($request->safe()->only('time')['time'] as $time)
-        {
-            DB::table('appointment_time')
-                ->insert([
-                    'time_id' => $time,
-                    'appointment_id' => $appointment->id,
-                    'created_at' => Carbon::now()
-                ]);
-
+       {
             $timeSlot = Time::query()->find($time);
             $timeSlot->count = ($timeSlot->count + 1);
             $timeSlot->save();
@@ -103,52 +92,31 @@ class AppointmentController extends Controller
     {
         $this-> CheckAuthorize($appointment);
 
-        if($appointment->services()->pluck('services.id') != $request->safe()->only('services'))
-        {
-            DB::table('appointment_service')
-                ->where('appointment_id', $appointment->id)
-                ->delete();
+        if($appointment->services()->pluck('services.id') != $request->safe()->only('services')) {
 
-            foreach ($request->safe()->only('services')['services'] as $service)
-            {
+            $appointment->services()->detach();
 
-                DB::table('appointment_service')
-                    ->insert([
-                        'service_id' => $service,
-                        'appointment_id' => $appointment->id,
-                        'created_at' => Carbon::now()
-                    ]);
-            }
+            $appointment->services()->attach($request->safe()->only('services')['services']);
         }
 
-        if($appointment->times()->pluck('times.id') != $request->safe()->only('time'))
-        {
+        if($appointment->times()->pluck('times.id') != $request->safe()->only('time')) {
             $previousTimeIds = $appointment->times()->pluck('times.id');
 
-            foreach ($previousTimeIds as $timeId)
-            {
+            foreach ($previousTimeIds as $timeId) {
                 $timeSlot = Time::query()->find($timeId);
                 $timeSlot->count = ($timeSlot->count - 1);
                 $timeSlot->save();
             }
 
-            DB::table('appointment_time')
-                ->where('appointment_id', $appointment->id)
-                ->delete();
+            $appointment->times()->detach();
+
+            $appointment->times()->attach($request->safe()->only('time')['time']);
 
             foreach ($request->safe()->only('time')['time'] as $time)
             {
-                DB::table('appointment_time')
-                    ->insert([
-                        'time_id' => $time,
-                        'appointment_id' => $appointment->id,
-                        'created_at' => Carbon::now()
-                    ]);
-
                 $timeSlot = Time::query()->find($time);
                 $timeSlot->count = ($timeSlot->count + 1);
                 $timeSlot->save();
-
             }
         }
 

@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointment_time', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('time_id')->constrained('times');
             $table->foreignId('appointment_id')->constrained('appointments');
-            $table->timestamps();
+
+            $table->primary(['time_id', 'appointment_id'], 'appointment_time_primary');
         });
     }
 

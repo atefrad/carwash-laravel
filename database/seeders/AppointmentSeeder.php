@@ -32,7 +32,6 @@ class AppointmentSeeder extends Seeder
 
                     'appointment_id' => $appointment->id,
                     'service_id' => $service->id,
-                    'created_at' => Carbon::now()
             ]);
             }
 
@@ -49,7 +48,6 @@ class AppointmentSeeder extends Seeder
 
                     'appointment_id' => $appointment->id,
                     'time_id' => $time->id,
-                     'created_at' => Carbon::now()
             ]);
             }
 
