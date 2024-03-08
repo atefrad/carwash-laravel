@@ -184,17 +184,29 @@
                         alert(response.error);
                     }
 
-                    let html = '<div id="time_options">'
+                    let html = '<div id="time_options">';
 
                     let i = 1;
 
-                    for(let timeSlots of response )
-                    {
-                        let timesId = '';
+                    let timesId;
 
-                        for(let timeSlot of timeSlots)
-                        {
-                            timesId+= timeSlot.id + ',';
+                    // let firstDay = response[0].day;
+
+                    for (let timeSlots of response) {
+                        if ($.isArray(timeSlots)) {
+
+                            timesId = '';
+
+                            for (let timeSlot of timeSlots) {
+                                timesId += timeSlot.id + ',';
+
+                            }
+                        } else {
+
+                            timesId = timeSlots.id;
+
+                            timeSlots[0] = timeSlots;
+                            timeSlots[timeSlots.length - 1] = timeSlots
 
                         }
 
@@ -203,8 +215,8 @@
                         html += timeSlots[0].year + '-' +
                             timeSlots[0].month + '-' +
                             timeSlots[0].day + ' -- ' +
-                            timeSlots[0].start_time.substring(0,5) + '-' +
-                            timeSlots[timeSlots.length - 1].finish_time.substring(0,5);
+                            timeSlots[0].start_time.substring(0, 5) + '-' +
+                            timeSlots[timeSlots.length - 1].finish_time.substring(0, 5);
                         html += '</label>';
 
                         i++;

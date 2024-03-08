@@ -31,6 +31,11 @@ class TimeController extends Controller
 
         $timeSlotsNeeded = $serviceDuration/$timeSlotDuration;
 
+        if ($timeSlotsNeeded === 1)
+        {
+            return response()->json($times);
+        }
+
         $availableTimeSlots[0] = [$times[0]];
 
         $k = 0;
@@ -44,7 +49,6 @@ class TimeController extends Controller
             }else{
                 $availableTimeSlots[$k] = [];
                 $availableTimeSlots[$k][] = $times[$i];
-//                $availableTimeSlots[$k] = $times[$i];
             }
 
             if(count($availableTimeSlots[$k]) === $timeSlotsNeeded)

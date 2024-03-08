@@ -53,7 +53,6 @@ class AppointmentController extends Controller
             $timeSlot = Time::query()->find($time);
             $timeSlot->count = ($timeSlot->count + 1);
             $timeSlot->save();
-
         }
 
         return redirect()->route('appointments.show', $appointment);

@@ -10,7 +10,7 @@
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <div class="navbar-nav mr-auto">
                     <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
-                    <a href="{{ route('trackAppointment.create') }}" class="nav-item nav-link">Track Your Appointment</a>
+                    <a href="{{ route('track-appointment.create') }}" class="nav-item nav-link">Track Your Appointment</a>
 {{--                    <a href="service.html" class="nav-item nav-link">Service</a>--}}
 {{--                    <a href="price.html" class="nav-item nav-link">Price</a>--}}
 {{--                    <a href="location.html" class="nav-item nav-link">Washing Points</a>--}}

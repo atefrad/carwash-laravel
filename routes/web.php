@@ -21,13 +21,16 @@ Route::get('/', function () {
 
 Route::resource('appointments', AppointmentController::class);
 
-Route::prefix('/track-appointment')
-    ->controller(TrackAppointmentController::class)
-    ->name('trackAppointment.')
-    ->group(function () {
-        Route::get('/',  'create')->name('create');
-        Route::post('/', 'store')->name('store');
-    });
+Route::resource('/track-appointment', TrackAppointmentController::class)
+    ->only(['create', 'store']);
+
+//Route::prefix('/track-appointment')
+//    ->controller(TrackAppointmentController::class)
+//    ->name('trackAppointment.')
+//    ->group(function () {
+//        Route::get('/',  'create')->name('create');
+//        Route::post('/', 'store')->name('store');
+//    });
 
 
 

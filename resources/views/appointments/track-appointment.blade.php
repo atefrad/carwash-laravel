@@ -29,7 +29,7 @@
                     </section>
                     <div class="comment-form">
                         <h2 class="text-center">Track Your Appointment</h2>
-                        <form action="{{ route('trackAppointment.store') }}" method="POST">
+                        <form action="{{ route('track-appointment.store') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="phone">Phone *</label>
