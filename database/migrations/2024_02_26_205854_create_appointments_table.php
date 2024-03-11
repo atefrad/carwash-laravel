@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->string('phone');
-            $table->string('name');
+            $table->foreignId('user_id')->constrained()
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('total_price');
             $table->string('tracking_code')->unique();
             $table->timestamps();

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Time;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
@@ -19,8 +20,7 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'phone' => fake()->phoneNumber,
-            'name' => fake()->name,
+            'user_id' => User::factory()->create(),
             'total_price' => rand(25000, 135000),
             'tracking_code' => rand(100000, 999999)
         ];

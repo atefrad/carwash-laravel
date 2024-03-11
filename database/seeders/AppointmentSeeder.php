@@ -26,29 +26,36 @@ class AppointmentSeeder extends Seeder
                 ->take(rand(1, 3))
                 ->get();
 
-            foreach ($services as $service)
-            {
-                DB::table('appointment_service')->insert([
+            /**
+             * @var Appointment $appointment
+             */
+            $appointment->services()->attach($services);
 
-                    'appointment_id' => $appointment->id,
-                    'service_id' => $service->id,
-            ]);
-            }
+//            foreach ($services as $service)
+//            {
+//                DB::table('appointment_service')->insert([
+//
+//                    'appointment_id' => $appointment->id,
+//                    'service_id' => $service->id,
+//            ]);
+//            }
 
             $times = Time::query()
                 ->active()
                 ->take(rand(1,7))
                 ->get();
 
+            $appointment->times()->attach($times);
+
             foreach ($times as $time)
             {
                 $time->update(['count' => $time->count + 1]);
 
-                DB::table('appointment_time')->insert([
-
-                    'appointment_id' => $appointment->id,
-                    'time_id' => $time->id,
-            ]);
+//                DB::table('appointment_time')->insert([
+//
+//                    'appointment_id' => $appointment->id,
+//                    'time_id' => $time->id,
+//            ]);
             }
 
         }
