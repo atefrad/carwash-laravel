@@ -5,6 +5,7 @@ namespace App\Http\Requests\Appointments;
 use App\Models\Service;
 use App\Rules\TimeAvailable;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentUpdateRequest extends FormRequest
 {
@@ -33,7 +34,6 @@ class AppointmentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3'],
             'services' => ['required', 'array', 'min:1'],
             'services.*' => ['required', 'integer', 'exists:services,id'],
             'time' => ['required', 'array', 'min:1'],
@@ -52,7 +52,10 @@ class AppointmentUpdateRequest extends FormRequest
 
         return array_merge(
             parent::validated(),
-            ['total_price' => $totalPrice]
+            [
+                'user_id' => Auth::id(),
+                'total_price' => $totalPrice
+            ]
         );
     }
 }

@@ -10,24 +10,38 @@
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <div class="navbar-nav mr-auto">
                     <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
-                    <a href="{{ route('track-appointment.create') }}" class="nav-item nav-link">Track Your Appointment</a>
-{{--                    <a href="service.html" class="nav-item nav-link">Service</a>--}}
-{{--                    <a href="price.html" class="nav-item nav-link">Price</a>--}}
-{{--                    <a href="location.html" class="nav-item nav-link">Washing Points</a>--}}
-{{--                    <div class="nav-item dropdown">--}}
-{{--                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>--}}
-{{--                        <div class="dropdown-menu">--}}
-{{--                            <a href="blog.html" class="dropdown-item">Blog Grid</a>--}}
-{{--                            <a href="single.html" class="dropdown-item">Detail Page</a>--}}
-{{--                            <a href="team.html" class="dropdown-item">Team Member</a>--}}
-{{--                            <a href="booking.html" class="dropdown-item">Schedule Booking</a>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <a href="contact.html" class="nav-item nav-link">Contact</a>--}}
+
+                    @auth
+{{--                    <a href="{{ route('track-appointment.create') }}" class="nav-item nav-link">Track Your Appointment</a>--}}
+
+                        @if(auth()->user()->is_manager)
+
+                            <a href="{{ route('managers.index') }}" class="nav-item nav-link">Management Panel</a>
+
+                        @else
+
+                            <a href="{{ route('dashboard') }}" class="nav-item nav-link">Dashboard</a>
+
+                        @endif
+
+                    @endauth
+
                 </div>
-                <div class="ml-auto">
-                    <a class="btn btn-custom" href="{{ route('appointments.create') }}">Get Appointment</a>
-                </div>
+                @auth
+                    <div class="ml-auto">
+                        <a class="btn btn-custom" href="{{ route('appointments.create') }}">Get Appointment</a>
+                        <form class="d-inline" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button class="btn btn-custom" href="{{ route('logout') }}">Log out</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="ml-auto">
+                        <a class="btn btn-custom" href="{{ route('login') }}">Log in</a>
+                        <a class="btn btn-custom" href="{{ route('register') }}">Register</a>
+                    </div>
+                @endauth
+
             </div>
         </nav>
     </div>

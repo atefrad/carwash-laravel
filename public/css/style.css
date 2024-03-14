@@ -2063,3 +2063,20 @@ a:focus {
 .bg-main {
     background-color: #202C45 !important;
 }
+
+#time_options_div {
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.check-box {
+    position: relative !important;
+    top: 25px;
+    left: 25px;
+}
+
+.check-box-label {
+    position: relative !important;
+    left: 25px;
+}

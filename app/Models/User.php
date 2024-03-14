@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,4 +47,71 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+//    protected $with = [
+//        'appointments'
+//    ];
+
+    //region relation
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+    //endregion
+
+    //region accessor
+    protected function totalPayments(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+
+                $totalPayments = 0;
+
+                foreach($this->appointments as $appointment)
+                {
+                    $totalPayments += $appointment->total_price;
+                }
+
+                return $totalPayments;
+            },
+        );
+    }
+
+    protected function lastUse(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+
+               $lastUse = 0;
+
+                foreach($this->appointments as $appointment)
+                {
+                    if(strtotime($appointment->times[0]->date_time) > strtotime($lastUse))
+                    {
+                        $lastUse = $appointment->times[0]->date_time;
+                    }
+                }
+
+                if(!$lastUse) return '';
+
+                return $lastUse;
+            }
+        );
+    }
+
+    protected function activity(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+
+                $threeMonthAgo = Carbon::parse(strtotime('-3 month'))
+                    ->format('Y-m-d H:i:s');
+
+                return $this->appointments()
+                    ->where('appointments.created_at', '>', $threeMonthAgo)
+                    ->count();
+            }
+        );
+    }
+    //endregion
 }

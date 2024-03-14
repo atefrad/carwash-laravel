@@ -33,15 +33,15 @@
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <label for="phone">Name</label>
-                                <input type="text" class="form-control" name="name" id="name" value="{{ $appointment->name }}">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" name="name" id="name" value="{{ $appointment->user->name }}" disabled>
                                 @error('name')
                                 <span class="d-block text-danger"> {{ $message }} </span>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input type="text" class="form-control" name="phone" id="phone" value="{{ $appointment->phone }}" disabled>
+                                <input type="text" class="form-control" name="phone" id="phone" value="{{ $appointment->user->phone }}" disabled>
                                 @error('phone')
                                 <span class="d-block text-danger"> {{ $message }} </span>
                                 @enderror

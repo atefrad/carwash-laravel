@@ -2,12 +2,6 @@
 
 @section('content')
 
-{{--    @if($errors->any())--}}
-{{--        @foreach($errors->all() as $error)--}}
-{{--            {{ $error }}--}}
-{{--        @endforeach--}}
-{{--    @endif--}}
-
     <!-- Page Header Start -->
     <div class="page-header">
         <div class="container">
@@ -40,18 +34,18 @@
 
                             @csrf
 
-                            <div class="control-group">
-                                <input type="text" class="form-control" name="name" placeholder="Name" required="required" value="{{ old('name') }}" />
-                                @error('name')
-                                <span class="d-block text-dark"> {{ $message }} </span>
-                                @enderror
-                            </div>
-                            <div class="control-group">
-                                <input type="text" class="form-control" name="phone" placeholder="Phone" required="required" value="{{ old('phone') }}" />
-                                @error('phone')
-                                <span class="d-block text-dark"> {{ $message }} </span>
-                                @enderror
-                            </div>
+{{--                            <div class="control-group">--}}
+{{--                                <input type="text" class="form-control" name="name" placeholder="Name" required="required" value="{{ old('name') }}" />--}}
+{{--                                @error('name')--}}
+{{--                                <span class="d-block text-dark"> {{ $message }} </span>--}}
+{{--                                @enderror--}}
+{{--                            </div>--}}
+{{--                            <div class="control-group">--}}
+{{--                                <input type="text" class="form-control" name="phone" placeholder="Phone" required="required" value="{{ old('phone') }}" />--}}
+{{--                                @error('phone')--}}
+{{--                                <span class="d-block text-dark"> {{ $message }} </span>--}}
+{{--                                @enderror--}}
+{{--                            </div>--}}
                             <div class="control-group border border-white rounded p-3">
                                 <p class="text-light">Carwash services : </p>
                                 @foreach($services as $service)
@@ -93,7 +87,7 @@
                                 @enderror
                             </div>
 
-                            <div id="time_options_div" class="control-group ml-3">
+                            <div id="time_options_div" class="control-group ml-3 border border-white rounded p-3 d-none">
                             </div>
 
                             <div>
@@ -210,14 +204,16 @@
 
                         }
 
-                        html += '<input type="radio" class="form-check-input my-2" name="time" id="timeSlot-' + i + '"' + 'value="' + timesId + '" required="required" />';
-                        html += '<label class="form-check-label d-block text-light my-3" for="timeSlot-' + i + '">';
+                        // html += '<div class="col-lg-6">';
+                        html += '<input type="radio" class="form-check-input check-box" name="time" id="timeSlot-' + i + '"' + 'value="' + timesId + '" required="required" />';
+                        html += '<label class="form-check-label check-box-label d-block text-light" for="timeSlot-' + i + '">';
                         html += timeSlots[0].year + '-' +
                             timeSlots[0].month + '-' +
                             timeSlots[0].day + ' -- ' +
                             timeSlots[0].start_time.substring(0, 5) + '-' +
                             timeSlots[timeSlots.length - 1].finish_time.substring(0, 5);
                         html += '</label>';
+                        // html += '</div>';
 
                         i++;
                     }

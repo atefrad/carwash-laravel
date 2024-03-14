@@ -25,7 +25,10 @@ class TimeController extends Controller
             $serviceDuration += Service::query()->find($serviceId)->duration;
         }
 
-        $times = Time::query()->active()->get();
+        $times = Time::query()
+            ->newTimeSlots()
+            ->active()
+            ->get();
 
         $timeSlotDuration = Setting::query()->first()->time_slot_duration;
 
@@ -82,7 +85,10 @@ class TimeController extends Controller
             $serviceDuration += Service::query()->find($serviceId)->duration;
         }
 
-        $times = Time::query()->active()->get();
+        $times = Time::query()
+            ->newTimeSlots()
+            ->active()
+            ->get();
 
         $timeSlotDuration = Setting::query()->first()->time_slot_duration;
 

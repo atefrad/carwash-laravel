@@ -23,11 +23,11 @@
             <table class="table table-bordered table-striped table-hover">
                 <tr>
                     <th>Name :</th>
-                    <td>{{ $appointment->name }}</td>
+                    <td>{{ $appointment->user->name }}</td>
                 </tr>
                 <tr>
                     <th>Phone :</th>
-                    <td>{{ $appointment->phone }}</td>
+                    <td>{{ $appointment->user->phone }}</td>
                 </tr>
                 <tr>
                     <th>Services :</th>

@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Rules\BetweenNineAndTwentyOne;
 use App\Rules\TimeAvailable;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentStoreRequest extends FormRequest
 {
@@ -23,7 +24,9 @@ class AppointmentStoreRequest extends FormRequest
         $times = array_filter(explode(',', request('time')));
 
         $this->merge(
-            ['time' => $times]
+            [
+                'time' => $times
+            ]
         );
     }
 
@@ -35,8 +38,8 @@ class AppointmentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3'],
-            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
+//            'name' => ['required', 'string', 'min:3'],
+//            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
             'services' => ['required', 'array', 'min:1'],
             'services.*' => ['required', 'integer', 'exists:services,id'],
             'time' => ['required', 'array', 'min:1'],
@@ -55,7 +58,9 @@ class AppointmentStoreRequest extends FormRequest
 
         return array_merge(
           parent::validated(),
-          [   'total_price' => $totalPrice,
+          [
+              'user_id' => Auth::id(),
+              'total_price' => $totalPrice,
               'tracking_code' => rand(100000, 999999)
           ]
         );

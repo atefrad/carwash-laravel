@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointments\AppointmentStoreRequest;
 use App\Http\Requests\Appointments\AppointmentUpdateRequest;
 use App\Models\Appointment;
 use App\Models\Service;
-use App\Models\Setting;
 use App\Models\Time;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $appointments = Appointment::query()
+            ->where('user_id', Auth::id())
+            ->paginate(Controller::DEFAULT_PAGINATE);
+
+        return view('appointments.index', compact('appointments'));
     }
 
     /**
@@ -49,7 +50,7 @@ class AppointmentController extends Controller
         $appointment->times()->attach($request->safe()->only('time')['time']);
 
         foreach ($request->safe()->only('time')['time'] as $time)
-       {
+        {
             $timeSlot = Time::query()->find($time);
             $timeSlot->count = ($timeSlot->count + 1);
             $timeSlot->save();
@@ -133,7 +134,7 @@ class AppointmentController extends Controller
 
         $appointment->delete();
 
-        return redirect()->route('home');
+        return redirect()->route('appointments.index');
     }
 
     private function CheckAuthorize($appointment)
