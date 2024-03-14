@@ -114,11 +114,11 @@
                                         @enderror
                                     </div>
 
-                                    <div id="time_options_div" class="control-group ml-3">
+                                    <div id="time_options_div" class="control-group ml-3 border rounded p-3 d-none">
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group mt-3">
                                     <label for="tracking_code">Tracking Code</label>
                                     <input type="text" class="form-control" name="tracking_code" id="tracking_code" value="{{ $appointment->tracking_code }}" disabled>
                                     @error('tracking_code')
@@ -222,18 +222,29 @@
 
                         let i = 1;
 
+                        let timesId;
+
                         for(let timeSlots of response )
                         {
-                            let timesId = '';
+                            if ($.isArray(timeSlots)) {
 
-                            for(let timeSlot of timeSlots)
-                            {
-                                timesId+= timeSlot.id + ',';
+                                timesId = '';
+
+                                for (let timeSlot of timeSlots) {
+                                    timesId += timeSlot.id + ',';
+
+                                }
+                            } else {
+
+                                timesId = timeSlots.id;
+
+                                timeSlots[0] = timeSlots;
+                                timeSlots[timeSlots.length - 1] = timeSlots
 
                             }
 
-                            html += '<input type="radio" class="form-check-input my-2" name="time" id="timeSlot-' + i + '"' + 'value="' + timesId + '" required="required" />';
-                            html += '<label class="form-check-label d-block my-3" for="timeSlot-' + i + '">';
+                            html += '<input type="radio" class="form-check-input check-box" name="time" id="timeSlot-' + i + '"' + 'value="' + timesId + '" required="required" />';
+                            html += '<label class="form-check-label check-box-label d-block" for="timeSlot-' + i + '">';
                             html += timeSlots[0].year + '-' +
                                 timeSlots[0].month + '-' +
                                 timeSlots[0].day + ' -- ' +

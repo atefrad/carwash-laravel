@@ -9,6 +9,7 @@ use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Time;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,7 @@ class AppointmentController extends Controller
             ->where('user_id', Auth::id())
             ->paginate(Controller::DEFAULT_PAGINATE);
 
-        return view('appointments.index', compact('appointments'));
+        return view('users.appointments.index', compact('appointments'));
     }
 
     /**
@@ -30,7 +31,7 @@ class AppointmentController extends Controller
     {
         $services = Service::all();
 
-        return view('appointments.create', compact('services'));
+        return view('users.appointments.create', compact('services'));
     }
 
     /**
@@ -61,17 +62,23 @@ class AppointmentController extends Controller
 
     /**
      * Display the specified resource.
+     * @throws AuthorizationException
      */
     public function show(Appointment $appointment)
     {
-        return view('appointments.show', compact('appointment'));
+        $this->authorize('view', $appointment);
+
+        return view('users.appointments.show', compact('appointment'));
     }
 
     /**
      * Show the form for editing the specified resource.
+     * @throws AuthorizationException
      */
     public function edit(Appointment $appointment)
     {
+        $this->authorize('update', $appointment);
+
         $services = Service::all();
 
         $selectedTimeValues = '';
@@ -81,16 +88,17 @@ class AppointmentController extends Controller
             $selectedTimeValues .= $time->id . ',';
         }
 
-        return view('appointments.edit',
+        return view('users.appointments.edit',
             compact('appointment', 'services', 'selectedTimeValues'));
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws AuthorizationException
      */
     public function update(AppointmentUpdateRequest $request, Appointment $appointment)
     {
-        $this-> CheckAuthorize($appointment);
+        $this->authorize('update', $appointment);
 
         if($appointment->services()->pluck('services.id') != $request->safe()->only('services')) {
 
@@ -127,22 +135,15 @@ class AppointmentController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @throws AuthorizationException
      */
     public function destroy(Appointment $appointment)
     {
-        $this-> CheckAuthorize($appointment);
+        $this->authorize('update', $appointment);
 
         $appointment->delete();
 
         return redirect()->route('appointments.index');
-    }
-
-    private function CheckAuthorize($appointment)
-    {
-        if(!$appointment->times[0]->day > Carbon::now()->day)
-        {
-            abort(403);
-        }
     }
 
 }

@@ -17,6 +17,13 @@
                 <div class="flex items-center pe-2">
                     <input type="text" name="time" id="time" class="w-52 px-3 block border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" placeholder="Date" onfocus="(this.type='date')">
                 </div>
+
+                @if(request()->filled('user'))
+                    <div>
+                        <input type="hidden" name="user" value="{{ request('user') }}">
+                    </div>
+                @endif
+
                 <div class="flex items-center pe-2">
                     <x-primary-button>Filter</x-primary-button>
                 </div>

@@ -65,5 +65,11 @@ class Appointment extends Model
                     ->where('year', $timeArray[0]));
         });
     }
+
+    public function scopeFilterUser(Builder $query): void
+    {
+        $query->when(request()->filled('user'),
+            fn (Builder $query) => $query->where('user_id', request('user')));
+    }
     //endregion
 }

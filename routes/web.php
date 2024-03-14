@@ -22,8 +22,8 @@ Route::get('/', function () {
     return view('index');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/users/dashboard', function () {
+    return view('users.dashboard');
 })->middleware('auth')->name('dashboard');
 
 Route::middleware('auth')->group(function () {

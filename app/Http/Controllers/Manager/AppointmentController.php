@@ -14,11 +14,13 @@ class AppointmentController extends Controller
         $totalCount = Appointment::query()
             ->filterService()
             ->filterTime()
+            ->filterUser()
             ->count();
 
         $appointments = Appointment::query()
             ->filterService()
             ->filterTime()
+            ->filterUser()
             ->paginate(Controller::DEFAULT_PAGINATE);
 
         $services = Service::all();
