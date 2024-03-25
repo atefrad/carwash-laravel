@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Appointments\AppointmentStoreRequest;
-use App\Http\Requests\Appointments\AppointmentUpdateRequest;
+use App\Http\Requests\User\Appointments\AppointmentStoreRequest;
+use App\Http\Requests\User\Appointments\AppointmentUpdateRequest;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Time;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -39,22 +38,30 @@ class AppointmentController extends Controller
      */
     public function store(AppointmentStoreRequest $request)
     {
+        try{
+            DB::beginTransaction();
 
-        $appointment = Appointment::query()
-            ->create($request->validated());
+            $appointment = Appointment::query()
+                ->create($request->validated());
 
-        /**
-         * @var Appointment $appointment
-         */
-        $appointment->services()->attach($request->safe()->only('services')['services']);
+            /**
+             * @var Appointment $appointment
+             */
+            $appointment->services()->attach($request->safe()->only('services')['services']);
 
-        $appointment->times()->attach($request->safe()->only('time')['time']);
+            $appointmentTimeslots = $request->safe()->only('time')['time'];
 
-        foreach ($request->safe()->only('time')['time'] as $time)
+            $appointment->times()->attach( $appointmentTimeslots);
+
+            $this->increaseCount( $appointmentTimeslots);
+
+            DB::commit();
+
+        }catch(\Throwable $exception)
         {
-            $timeSlot = Time::query()->find($time);
-            $timeSlot->count = ($timeSlot->count + 1);
-            $timeSlot->save();
+            DB::rollBack();
+
+            return back()->withErrors(['transaction' => 'Your Transaction failed!']);
         }
 
         return redirect()->route('appointments.show', $appointment);
@@ -100,35 +107,41 @@ class AppointmentController extends Controller
     {
         $this->authorize('update', $appointment);
 
-        if($appointment->services()->pluck('services.id') != $request->safe()->only('services')) {
+        try{
 
-            $appointment->services()->detach();
+            DB::beginTransaction();
 
-            $appointment->services()->attach($request->safe()->only('services')['services']);
-        }
+            if($appointment->services()->pluck('services.id') != $request->safe()->only('services')) {
 
-        if($appointment->times()->pluck('times.id') != $request->safe()->only('time')) {
-            $previousTimeIds = $appointment->times()->pluck('times.id');
+                $appointment->services()->detach();
 
-            foreach ($previousTimeIds as $timeId) {
-                $timeSlot = Time::query()->find($timeId);
-                $timeSlot->count = ($timeSlot->count - 1);
-                $timeSlot->save();
+                $appointment->services()->attach($request->safe()->only('services')['services']);
             }
 
-            $appointment->times()->detach();
+            if($appointment->times()->pluck('times.id') != $request->safe()->only('time')) {
+                $previousTimeIds = $appointment->times()->pluck('times.id');
 
-            $appointment->times()->attach($request->safe()->only('time')['time']);
+                $this->decreaseCount($previousTimeIds);
 
-            foreach ($request->safe()->only('time')['time'] as $time)
-            {
-                $timeSlot = Time::query()->find($time);
-                $timeSlot->count = ($timeSlot->count + 1);
-                $timeSlot->save();
+                $appointment->times()->detach();
+
+                $appointmentTimeslots = $request->safe()->only('time')['time'];
+
+                $appointment->times()->attach($appointmentTimeslots);
+
+                $this->increaseCount( $appointmentTimeslots);
             }
-        }
 
-        $appointment->update($request->validated());
+            $appointment->update($request->validated());
+
+            DB::commit();
+
+        }catch(\Throwable $exception)
+        {
+            DB::rollBack();
+
+            return back()->withErrors(['transaction' => 'Your Transaction failed!']);
+        }
 
         return redirect()->route('appointments.show', $appointment);
     }
@@ -141,9 +154,51 @@ class AppointmentController extends Controller
     {
         $this->authorize('update', $appointment);
 
-        $appointment->delete();
+        try{
 
-        return redirect()->route('appointments.index');
+            DB::beginTransaction();
+
+            $appointment->services()->detach();
+
+            $timesId = $appointment->times()->pluck('times.id');
+
+            $this->decreaseCount($timesId);
+
+            $appointment->times()->detach();
+
+            $appointment->delete();
+
+            DB::commit();
+
+        }catch(\Throwable $exception)
+        {
+            DB::rollBack();
+
+            return back()->with(['fail' => 'Error! The appointment was not deleted!']);
+        }
+
+        return redirect()->route('appointments.index')
+            ->with(['success' => 'The appointment deleted successfully']);
+    }
+
+    private function increaseCount(array $times)
+    {
+        foreach ($times as $time)
+        {
+            $timeSlot = Time::query()->find($time);
+            $timeSlot->count = ($timeSlot->count + 1);
+            $timeSlot->save();
+        }
+    }
+
+    private function decreaseCount($times)
+    {
+        foreach($times as $time)
+        {
+            $timeSlot = Time::query()->find($time);
+            $timeSlot->count = ($timeSlot->count - 1);
+            $timeSlot->save();
+        }
     }
 
 }

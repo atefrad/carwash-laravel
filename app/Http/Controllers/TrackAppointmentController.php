@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Appointments\TrackAppointmentStoreRequest;
+use App\Http\Requests\User\Appointments\TrackAppointmentStoreRequest;
 use App\Models\Appointment;
 
 class TrackAppointmentController extends Controller

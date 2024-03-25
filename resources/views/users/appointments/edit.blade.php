@@ -2,6 +2,12 @@
 
 @section('content')
 
+    @error('transaction')
+    <div id="transaction_error" class="position-absolute alert alert-danger w-25 text-center">
+        <p><strong>{{ $message }}</strong></p>
+    </div>
+    @enderror
+
     <!-- Page Header Start -->
     <div class="page-header">
         <div class="container">
@@ -36,14 +42,14 @@
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" name="name" id="name" value="{{ $appointment->user->name }}" disabled>
                                 @error('name')
-                                <span class="d-block text-danger"> {{ $message }} </span>
+                                <span class="d-block text-danger pl-3"> {{ $message }} </span>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone</label>
                                 <input type="text" class="form-control" name="phone" id="phone" value="{{ $appointment->user->phone }}" disabled>
                                 @error('phone')
-                                <span class="d-block text-danger"> {{ $message }} </span>
+                                <span class="d-block text-danger pl-3"> {{ $message }} </span>
                                 @enderror
                             </div>
                             <div class="control-group border rounded p-3 my-3">
@@ -61,11 +67,11 @@
                                 @endforeach
 
                                 @error('services')
-                                <span class="d-block text-dark"> {{ $message }} </span>
+                                <span class="d-block text-danger pl-3"> {{ $message }} </span>
                                 @enderror
 
                                 @error('services.*')
-                                <span class="d-block text-dark"> {{ $message }} </span>
+                                <span class="d-block text-danger pl-3"> {{ $message }} </span>
                                 @enderror
                             </div>
 
@@ -76,10 +82,7 @@
                                         <input type="radio" class="form-check-input" name="time" id="selected_time"
                                                value="{{ $selectedTimeValues }}" required="required" />
                                         <label class="form-check-label d-block" for="selected_time">
-                                            {{ $appointment->times[0]->year . '-' .
-                                            $appointment->times[0]->month . '-' .
-                                            $appointment->times[0]->day . ' ' .
-                                            substr($appointment->times[0]->start_time, 0, 5) . ' - ' .
+                                            {{ $appointment->times[0]->date_time . ' - ' .
                                             substr($appointment->times[count($appointment->times) - 1]->finish_time, 0, 5)
                                                }}
                                             </label>
@@ -87,6 +90,13 @@
                                         <div class="col-2">
                                             <button type="button" id="change_time_btn" class="btn btn-custom">Change</button>
                                         </div>
+                                        @error('time')
+                                        <span class="d-block text-danger pl-3"> {{ $message }} </span>
+                                        @enderror
+
+                                        @error('time.*')
+                                        <span class="d-block text-danger pl-3"> {{ $message }} </span>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -105,13 +115,6 @@
                                         <button type="button" class="btn btn-custom  my-2" id="custom_time">
                                             Show all available times
                                         </button>
-                                        @error('time')
-                                        <span class="d-block text-dark"> {{ $message }} </span>
-                                        @enderror
-
-                                        @error('time.*')
-                                        <span class="d-block text-dark"> {{ $message }} </span>
-                                        @enderror
                                     </div>
 
                                     <div id="time_options_div" class="control-group ml-3 border rounded p-3 d-none">
@@ -122,7 +125,7 @@
                                     <label for="tracking_code">Tracking Code</label>
                                     <input type="text" class="form-control" name="tracking_code" id="tracking_code" value="{{ $appointment->tracking_code }}" disabled>
                                     @error('tracking_code')
-                                    <span class="d-block text-danger"> {{ $message }} </span>
+                                    <span class="d-block text-danger pl-3"> {{ $message }} </span>
                                     @enderror
                                 </div>
                                 <div class="form-group">
@@ -269,5 +272,18 @@
                     }
                 });
             });
+
+            setTimeout(function () {
+                $('#transaction_error').toggleClass('d-none');
+            }, 4000);
+
+            //disable the old selected time when user change the service
+            $('input[name="services[]"]').change(function () {
+
+                $('#selected_time').prop('disabled', true);
+
+                $('#change_time_options').removeClass('d-none');
+            });
+
         </script>
     @endsection

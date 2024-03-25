@@ -9,18 +9,19 @@
 
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <div class="navbar-nav mr-auto">
-                    <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
+                    <a href="{{ route('home') }}" class="nav-item nav-link @if(request()->routeIs('home')) {{ "active" }} @endif">Home</a>
 
                     @auth
 {{--                    <a href="{{ route('track-appointment.create') }}" class="nav-item nav-link">Track Your Appointment</a>--}}
 
                         @if(auth()->user()->is_manager)
 
-                            <a href="{{ route('managers.index') }}" class="nav-item nav-link">Management Panel</a>
+                            <a href="{{ route('managers.index') }}" class="nav-item nav-link @if(request()->routeIs('managers.index')) {{ "active" }} @endif">Management Panel</a>
 
                         @else
 
-                            <a href="{{ route('dashboard') }}" class="nav-item nav-link">Dashboard</a>
+                            <a href="{{ route('appointments.index') }}" class="nav-item nav-link @if(request()->routeIs('appointments.index')) {{ "active" }} @endif">My Appointments</a>
+                            <a href="{{ route('users.show', auth()->user()) }}" class="nav-item nav-link @if(request()->routeIs('users.profile.show')) {{ "active" }} @endif">My Profile</a>
 
                         @endif
 
@@ -29,16 +30,16 @@
                 </div>
                 @auth
                     <div class="ml-auto">
-                        <a class="btn btn-custom" href="{{ route('appointments.create') }}">Get Appointment</a>
+                        <a class="btn btn-custom mr-1" href="{{ route('appointments.create') }}">Get Appointment</a>
                         <form class="d-inline" action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button class="btn btn-custom" href="{{ route('logout') }}">Log out</button>
+                            <button class="btn btn-custom ml-1" href="{{ route('logout') }}">Log out</button>
                         </form>
                     </div>
                 @else
                     <div class="ml-auto">
-                        <a class="btn btn-custom" href="{{ route('login') }}">Log in</a>
-                        <a class="btn btn-custom" href="{{ route('register') }}">Register</a>
+                        <a class="btn btn-custom mr-1" href="{{ route('login') }}">Log in</a>
+                        <a class="btn btn-custom ml-1" href="{{ route('register') }}">Register</a>
                     </div>
                 @endauth
 

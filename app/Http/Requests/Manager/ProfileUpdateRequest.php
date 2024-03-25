@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Manager;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,7 +17,7 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/', Rule::unique(User::class)->ignore($this->route()->id)],
+            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/', Rule::unique(User::class)->ignore($this->user())],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
         ];
     }

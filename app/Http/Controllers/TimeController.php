@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
-use App\Models\Setting;
 use App\Models\Time;
-use Illuminate\Http\Request;
+use App\Traits\TimeSlotsNeeded;
 
 class TimeController extends Controller
 {
+    use TimeSlotsNeeded;
+
     public function index()
     {
         if(empty($_GET['service_id']))
@@ -18,21 +18,12 @@ class TimeController extends Controller
 
         $servicesId = explode(' ', $_GET['service_id']);
 
-        $serviceDuration = 0;
-
-        foreach ($servicesId as $serviceId)
-        {
-            $serviceDuration += Service::query()->find($serviceId)->duration;
-        }
+        $timeSlotsNeeded = $this->calculateTimeSlotsNeeded($servicesId);
 
         $times = Time::query()
             ->newTimeSlots()
             ->active()
             ->get();
-
-        $timeSlotDuration = Setting::query()->first()->time_slot_duration;
-
-        $timeSlotsNeeded = $serviceDuration/$timeSlotDuration;
 
         if ($timeSlotsNeeded === 1)
         {
@@ -43,16 +34,13 @@ class TimeController extends Controller
 
         $k = 0;
 
-        for($i = 1; $i <  count($times) -1; $i++)//
+        for($i = 1; $i <  count($times); $i++)
         {
-            if($times[$i]->start_time === $times[$i-1]->finish_time)
+            if($times[$i]->start_time !== $times[$i - 1]->finish_time)
             {
-                $availableTimeSlots[$k][] = $times[$i];
-
-            }else{
                 $availableTimeSlots[$k] = [];
-                $availableTimeSlots[$k][] = $times[$i];
             }
+            $availableTimeSlots[$k][] = $times[$i];
 
             if(count($availableTimeSlots[$k]) === $timeSlotsNeeded)
             {
@@ -78,21 +66,12 @@ class TimeController extends Controller
 
         $servicesId = explode(' ', $_GET['service_id']);
 
-        $serviceDuration = 0;
-
-        foreach ($servicesId as $serviceId)
-        {
-            $serviceDuration += Service::query()->find($serviceId)->duration;
-        }
+        $timeSlotsNeeded = $this->calculateTimeSlotsNeeded($servicesId);
 
         $times = Time::query()
             ->newTimeSlots()
             ->active()
             ->get();
-
-        $timeSlotDuration = Setting::query()->first()->time_slot_duration;
-
-        $timeSlotsNeeded = $serviceDuration/$timeSlotDuration;
 
         $fastestTimeSlots = [$times[0]];
 
@@ -103,14 +82,11 @@ class TimeController extends Controller
                 break;
             }
 
-            if($times[$i]->start_time === $times[$i-1]->finish_time)
+            if($times[$i]->start_time !== $times[$i - 1]->finish_time)
             {
-                $fastestTimeSlots[] = $times[$i];
-
-            }else{
                 $fastestTimeSlots = [];
-                $fastestTimeSlots[] = $times[$i];
             }
+            $fastestTimeSlots[] = $times[$i];
         }
 
         return response()->json($fastestTimeSlots);

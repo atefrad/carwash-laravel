@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\Manager\AppointmentController as ManagerAppointmentController;
+use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use App\Http\Controllers\Manager\UserController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrackAppointmentController;
 use App\Http\Controllers\User\AppointmentController as UserAppointmentController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,30 +19,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//home
 Route::get('/', function () {
     return view('index');
 })->name('home');
 
-Route::get('/users/dashboard', function () {
-    return view('users.dashboard');
-})->middleware('auth')->name('dashboard');
-
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    //appointments
-//    Route::resource('appointments', AppointmentController::class);
 
     //user appointments
     Route::resource('/users/appointments', UserAppointmentController::class);
+
+    //user profile
+    Route::prefix('/users')
+        ->controller(UserProfileController::class)
+        ->name('users.')
+        ->group(function () {
+
+            Route::get('/{user}', 'show')->name('show');
+            Route::get('/{user}/edit', 'edit')->name('edit');
+            Route::put('/{user}', 'update')->name('update');
+            Route::delete('/{user}', 'destroy')->name('destroy');
+        });
 
     //tracking appointments
     Route::resource('/track-appointment', TrackAppointmentController::class)
         ->only(['create', 'store']);
 });
 
+//manager routes
 Route::prefix('/managers')
     ->middleware(['auth', 'isManager'])
     ->name('managers.')
@@ -56,6 +61,14 @@ Route::prefix('/managers')
 
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
+
+        //manager profile
+        Route::controller(ManagerProfileController::class)->group(function () {
+
+            Route::get('/edit','edit')->name('edit');
+            Route::patch('/','update')->name('update');
+            Route::delete('/','destroy')->name('destroy');
+        });
     });
 
 require __DIR__.'/auth.php';

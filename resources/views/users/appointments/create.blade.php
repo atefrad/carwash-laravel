@@ -2,6 +2,12 @@
 
 @section('content')
 
+    @error('transaction')
+        <div id="transaction_error" class="position-absolute alert alert-danger w-25 text-center">
+            <p><strong>{{ $message }}</strong></p>
+        </div>
+    @enderror
+
     <!-- Page Header Start -->
     <div class="page-header">
         <div class="container">
@@ -232,5 +238,10 @@
                 }
             });
         });
+
+        setTimeout(function () {
+            $('#transaction_error').toggleClass('d-none');
+        }, 4000);
+
     </script>
 @endsection

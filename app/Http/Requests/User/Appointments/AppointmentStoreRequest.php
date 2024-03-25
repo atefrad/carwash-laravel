@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Appointments;
+namespace App\Http\Requests\User\Appointments;
 
-use App\Models\Appointment;
 use App\Models\Service;
 use App\Rules\BetweenNineAndTwentyOne;
 use App\Rules\TimeAvailable;
+use App\Traits\TimeSlotsNeeded;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AppointmentStoreRequest extends FormRequest
 {
+    use TimeSlotsNeeded;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -37,12 +38,13 @@ class AppointmentStoreRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        $timeSlotsNeeded = $this->calculateTimeSlotsNeeded(request('services'));
+
         return [
-//            'name' => ['required', 'string', 'min:3'],
-//            'phone' => ['required', 'string', 'regex:/^(0098|0|\+98)9[0-9]{9}$/'],
             'services' => ['required', 'array', 'min:1'],
             'services.*' => ['required', 'integer', 'exists:services,id'],
-            'time' => ['required', 'array', 'min:1'],
+            'time' => ['required', 'array', 'size:' . $timeSlotsNeeded],
             'time.*' => ['required', 'integer', 'exists:times,id', new TimeAvailable]
         ];
     }
@@ -63,6 +65,14 @@ class AppointmentStoreRequest extends FormRequest
               'total_price' => $totalPrice,
               'tracking_code' => rand(100000, 999999)
           ]
+        );
+    }
+
+    public function messages()
+    {
+        return array_merge(
+            parent::messages(),
+            ['time.size' => 'The :attribute is not valid!']
         );
     }
 }

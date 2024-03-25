@@ -19,7 +19,7 @@
                             </div>
                             <div class="top-bar-text">
                                 <h3>Opening Hour</h3>
-                                <p>Mon - Fri, 9:00AM - 9:00PM</p>
+                                <p>Everyday, 9:00AM - 9:00PM</p>
                             </div>
                         </div>
                     </div>
