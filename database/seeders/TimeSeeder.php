@@ -4,12 +4,14 @@ namespace Database\Seeders;
 
 use App\Models\Setting;
 use App\Models\Time;
+use App\Traits\TimeSeedForOneDay;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TimeSeeder extends Seeder
 {
+    use TimeSeedForOneDay;
     /**
      * Run the database seeds.
      */
@@ -19,58 +21,11 @@ class TimeSeeder extends Seeder
         $tomorrow = $today->copy()->addDay();
         $dayAfterTomorrow = $tomorrow->copy()->addDay();
 
-        $workingTime = Setting::query()->first()->working_time;
-
-        $opening_time = $workingTime['opening_time'];
-        $closing_time = $workingTime['closing_time'];
-
-//        $todayDay = $today->day;
-//        $todayMonth = $today->month;
-//        $todayYear = $today->year;
-
-            $days = [$today, $tomorrow, $dayAfterTomorrow];
+        $days = [$today, $tomorrow, $dayAfterTomorrow];
 
         foreach ($days as $day)
         {
-            for ($i = $opening_time; $i < $closing_time; $i ++)
-            {
-                Time::query()->create([
-                    'start_time' => "0{$i}:00",
-                    'finish_time' => "0{$i}:15",
-                    'day' => $day->day,
-                    'month' => $day->month,
-                    'year' => $day->year,
-                    'count' => 0
-                ]);
-
-                Time::query()->create([
-                    'start_time' => "0{$i}:15",
-                    'finish_time' => "0{$i}:30",
-                    'day' => $day->day,
-                    'month' => $day->month,
-                    'year' => $day->year,
-                    'count' => 0
-                ]);
-
-                Time::query()->create([
-                    'start_time' => "0{$i}:30",
-                    'finish_time' => "0{$i}:45",
-                    'day' => $day->day,
-                    'month' => $day->month,
-                    'year' => $day->year,
-                    'count' => 0
-                ]);
-
-                Time::query()->create([
-                    'start_time' => "0{$i}:45",
-                    'finish_time' => $i + 1 . ":00",
-                    'day' => $day->day,
-                    'month' => $day->month,
-                    'year' => $day->year,
-                    'count' => 0
-                ]);
-            }
-
+            $this->dailyTimeSeed($day);
         }
     }
 
