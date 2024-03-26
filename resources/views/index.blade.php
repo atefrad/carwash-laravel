@@ -91,62 +91,19 @@
             <h2>Premium Washing Services</h2>
         </div>
         <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-car-wash-1"></i>
-                    <h3>Exterior Washing</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
+
+            @foreach($services as $service)
+
+                <div class="col-lg-3 col-md-6 @if($loop->first) offset-lg-2 @endif">
+                    <div class="service-item">
+                        <i class="flaticon-car-wash-1"></i>
+                        <h3>{{ $service->name }}</h3>
+                        <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-car-wash"></i>
-                    <h3>Interior Washing</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-vacuum-cleaner"></i>
-                    <h3>Vacuum Cleaning</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-seat"></i>
-                    <h3>Seats Washing</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-car-service"></i>
-                    <h3>Window Wiping</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-car-service-2"></i>
-                    <h3>Wet Cleaning</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-car-wash"></i>
-                    <h3>Oil Changing</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="service-item">
-                    <i class="flaticon-brush-1"></i>
-                    <h3>Brake Reparing</h3>
-                    <p>Lorem ipsum dolor sit amet elit. Phase nec preti facils ornare velit non metus tortor</p>
-                </div>
-            </div>
+
+            @endforeach
+
         </div>
     </div>
 </div>
@@ -210,48 +167,48 @@
             <div class="col-md-4">
                 <div class="price-item">
                     <div class="price-header">
-                        <h3>Basic Cleaning</h3>
-                        <h2><span>$</span><strong>25</strong><span>.99</span></h2>
+                        <h3>Exterior Wash</h3>
+                        <h2><span>$</span><strong>25</strong><span>000</span></h2>
                     </div>
                     <div class="price-body">
                         <ul>
-                            <li><i class="far fa-check-circle"></i>Seats Washing</li>
-                            <li><i class="far fa-check-circle"></i>Vacuum Cleaning</li>
+                            <li><i class="far fa-times-circle"></i>Seats Washing</li>
+                            <li><i class="far fa-times-circle"></i>Vacuum Cleaning</li>
                             <li><i class="far fa-check-circle"></i>Exterior Cleaning</li>
                             <li><i class="far fa-times-circle"></i>Interior Wet Cleaning</li>
-                            <li><i class="far fa-times-circle"></i>Window Wiping</li>
+                            <li><i class="far fa-check-circle"></i>Window Wiping</li>
                         </ul>
                     </div>
                     <div class="price-footer">
-                        <a class="btn btn-custom" href="">Book Now</a>
+                        <a class="btn btn-custom" href="{{ route('appointments.create') }}">Book Now</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="price-item featured-item">
                     <div class="price-header">
-                        <h3>Premium Cleaning</h3>
-                        <h2><span>$</span><strong>35</strong><span>.99</span></h2>
+                        <h3>Interior Cleaning</h3>
+                        <h2><span>$</span><strong>30</strong><span>000</span></h2>
                     </div>
                     <div class="price-body">
                         <ul>
                             <li><i class="far fa-check-circle"></i>Seats Washing</li>
                             <li><i class="far fa-check-circle"></i>Vacuum Cleaning</li>
-                            <li><i class="far fa-check-circle"></i>Exterior Cleaning</li>
+                            <li><i class="far fa-times-circle"></i>Exterior Cleaning</li>
                             <li><i class="far fa-check-circle"></i>Interior Wet Cleaning</li>
                             <li><i class="far fa-times-circle"></i>Window Wiping</li>
                         </ul>
                     </div>
                     <div class="price-footer">
-                        <a class="btn btn-custom" href="">Book Now</a>
+                        <a class="btn btn-custom" href="{{ route('appointments.create') }}">Book Now</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="price-item">
                     <div class="price-header">
-                        <h3>Complex Cleaning</h3>
-                        <h2><span>$</span><strong>49</strong><span>.99</span></h2>
+                        <h3>Full Service</h3>
+                        <h2><span>$</span><strong>80</strong><span>000</span></h2>
                     </div>
                     <div class="price-body">
                         <ul>
@@ -263,7 +220,7 @@
                         </ul>
                     </div>
                     <div class="price-footer">
-                        <a class="btn btn-custom" href="">Book Now</a>
+                        <a class="btn btn-custom" href="{{ route('appointments.create') }}">Book Now</a>
                     </div>
                 </div>
             </div>

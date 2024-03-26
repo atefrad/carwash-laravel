@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\AppointmentController as ManagerAppointmentController;
 use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use App\Http\Controllers\Manager\UserController;
@@ -20,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 //home
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
 

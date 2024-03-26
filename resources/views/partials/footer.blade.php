@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="container copyright">
-        <p>&copy; <a href="#">Your Site Name</a>, All Right Reserved. Designed By <a href="https://htmlcodex.com">HTML Codex</a></p>
+        <p>&copy; <a href="#">Fateme Atefrad</a>, All Right Reserved. Designed By <a href="https://htmlcodex.com">HTML Codex</a></p>
     </div>
 </div>
 <!-- Footer End -->
