@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\User\Appointments;
+namespace App\Http\Requests\User\Appointment;
 
 use App\Models\Service;
-use App\Rules\BetweenNineAndTwentyOne;
 use App\Rules\TimeAvailable;
 use App\Traits\TimeSlotsNeeded;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class AppointmentStoreRequest extends FormRequest
+class AppointmentUpdateRequest extends FormRequest
 {
     use TimeSlotsNeeded;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,9 +25,7 @@ class AppointmentStoreRequest extends FormRequest
         $times = array_filter(explode(',', request('time')));
 
         $this->merge(
-            [
-                'time' => $times
-            ]
+            ['time' => $times]
         );
     }
 
@@ -59,12 +57,11 @@ class AppointmentStoreRequest extends FormRequest
         }
 
         return array_merge(
-          parent::validated(),
-          [
-              'user_id' => Auth::id(),
-              'total_price' => $totalPrice,
-              'tracking_code' => rand(100000, 999999)
-          ]
+            parent::validated(),
+            [
+                'user_id' => Auth::id(),
+                'total_price' => $totalPrice
+            ]
         );
     }
 

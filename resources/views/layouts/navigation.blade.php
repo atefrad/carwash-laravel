@@ -21,7 +21,11 @@
                             {{ __('Appointments') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('managers.users.index')" :active="request()->routeIs('users.index')">
+                        <x-nav-link :href="route('managers.services.index')" :active="request()->routeIs('managers.services.index')">
+                            {{ __('Services') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('managers.users.index')" :active="request()->routeIs('managers.users.index')">
                             {{ __('Users') }}
                         </x-nav-link>
 {{--                    @else--}}

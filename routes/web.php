@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\AppointmentController as ManagerAppointmentController;
 use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
+use App\Http\Controllers\Manager\ServiceController;
 use App\Http\Controllers\Manager\UserController;
 use App\Http\Controllers\TrackAppointmentController;
 use App\Http\Controllers\User\AppointmentController as UserAppointmentController;
@@ -60,6 +61,10 @@ Route::prefix('/managers')
 
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
+
+        //services
+        Route::resource('services', ServiceController::class)
+        ->except(['show']);
 
         //manager profile
         Route::controller(ManagerProfileController::class)->group(function () {

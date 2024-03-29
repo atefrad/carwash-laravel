@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Appointments\AppointmentStoreRequest;
-use App\Http\Requests\User\Appointments\AppointmentUpdateRequest;
+use App\Http\Requests\User\Appointment\AppointmentStoreRequest;
+use App\Http\Requests\User\Appointment\AppointmentUpdateRequest;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Time;

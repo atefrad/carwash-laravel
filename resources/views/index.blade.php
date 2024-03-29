@@ -94,7 +94,7 @@
 
             @foreach($services as $service)
 
-                <div class="col-lg-3 col-md-6 @if($loop->first) offset-lg-2 @endif">
+                <div class="col-lg-3 col-md-6">
                     <div class="service-item">
                         <i class="flaticon-car-wash-1"></i>
                         <h3>{{ $service->name }}</h3>
