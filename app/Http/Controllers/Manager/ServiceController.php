@@ -16,7 +16,11 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::all();
+        $services = cache()->remember(
+            'services',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Service::all()
+        );
 
         return view('managers.services.index', compact('services'));
     }
@@ -26,7 +30,11 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        $timeSlotDuration = Setting::query()->first()->time_slot_duration;
+        $timeSlotDuration = cache()->remember(
+            'timeSlotDuration',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Setting::query()->first()->time_slot_duration
+        );
 
         return view('managers.services.create', compact('timeSlotDuration'));
     }
@@ -47,7 +55,11 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        $timeSlotDuration = Setting::query()->first()->time_slot_duration;
+        $timeSlotDuration = cache()->remember(
+            'timeSlotDuration',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Setting::query()->first()->time_slot_duration
+        );
 
         return view('managers.services.edit', compact('service', 'timeSlotDuration'));
     }

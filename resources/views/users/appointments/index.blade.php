@@ -64,7 +64,7 @@
                     @php $count++ @endphp
                 @empty
                     <tr>
-                        <td colspan="4" class="p-4 text-center">
+                        <td colspan="5" class="p-4 text-center">
                             No Appointments Yet!
                         </td>
                     </tr>

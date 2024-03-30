@@ -16,9 +16,16 @@ class AppointmentController extends Controller
 {
     public function index()
     {
-        $appointments = Appointment::query()
-            ->where('user_id', Auth::id())
-            ->paginate(Controller::DEFAULT_PAGINATE);
+        $page = request('page') ?? 1;
+        $user_id = Auth::id();
+
+        $appointments = cache()->remember(
+            'appointments.' . str($page) . '_user.' . str($user_id),
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Appointment::query()
+            ->where('user_id', $user_id)
+            ->paginate(Controller::DEFAULT_PAGINATE)
+        );
 
         return view('users.appointments.index', compact('appointments'));
     }
@@ -28,7 +35,11 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        $services = Service::all();
+        $services = cache()->remember(
+            'services',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Service::all()
+        );
 
         return view('users.appointments.create', compact('services'));
     }
@@ -86,7 +97,11 @@ class AppointmentController extends Controller
     {
         $this->authorize('update', $appointment);
 
-        $services = Service::all();
+        $services = cache()->remember(
+            'services',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Service::all()
+        );
 
         $selectedTimeValues = '';
 

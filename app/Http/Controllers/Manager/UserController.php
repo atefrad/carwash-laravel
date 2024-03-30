@@ -11,9 +11,15 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::query()
-            ->where('is_manager', false)
-            ->paginate(Controller::DEFAULT_PAGINATE);
+        $page = request('page') ?? 1;
+
+        $users = cache()->remember(
+            'users.' . str($page),
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => User::query()
+                ->where('is_manager', false)
+                ->paginate(Controller::DEFAULT_PAGINATE)
+        );
 
         return view('managers.users.index', compact('users'));
     }

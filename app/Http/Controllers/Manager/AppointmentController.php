@@ -23,7 +23,11 @@ class AppointmentController extends Controller
             ->filterUser()
             ->paginate(Controller::DEFAULT_PAGINATE);
 
-        $services = Service::all();
+        $services = cache()->remember(
+            'services',
+            Controller::DEFAULT_CACHE_SECONDS,
+            fn() => Service::all()
+        );
 
         return view('managers.appointments.index', compact('appointments', 'services', 'totalCount'));
     }
