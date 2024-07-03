@@ -99,7 +99,14 @@
                         </tbody>
                     </table>
                     <div class="mt-4">
-                        {{ $appointments->appends(['user' => request('user')])->links()}}
+                        {{
+                            $appointments
+                            ->appends([
+                                'user' => request('user'),
+                                'service' => request('service'),
+                                'time' => request('time')
+                                ])->links()
+                        }}
                     </div>
                 </div>
             </div>

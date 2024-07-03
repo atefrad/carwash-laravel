@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Time;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,7 +18,18 @@ class AppointmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $appointments = Appointment::factory(10)->create();
+        $users = User::query()
+            ->where('id', '>', 1)
+            ->get();
+
+        foreach($users as $user)
+        {
+            Appointment::factory(rand(1,3))->create([
+                'user_id' => $user->id
+            ]);
+        }
+
+        $appointments = Appointment::all()->shuffle();
 
         foreach ($appointments as $appointment)
         {
@@ -31,15 +43,6 @@ class AppointmentSeeder extends Seeder
              */
             $appointment->services()->attach($services);
 
-//            foreach ($services as $service)
-//            {
-//                DB::table('appointment_service')->insert([
-//
-//                    'appointment_id' => $appointment->id,
-//                    'service_id' => $service->id,
-//            ]);
-//            }
-
             $times = Time::query()
                 ->active()
                 ->take(rand(1,7))
@@ -50,12 +53,6 @@ class AppointmentSeeder extends Seeder
             foreach ($times as $time)
             {
                 $time->update(['count' => $time->count + 1]);
-
-//                DB::table('appointment_time')->insert([
-//
-//                    'appointment_id' => $appointment->id,
-//                    'time_id' => $time->id,
-//            ]);
             }
 
         }

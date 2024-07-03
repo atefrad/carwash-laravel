@@ -18,5 +18,13 @@ class UserSeeder extends Seeder
             'phone' => '09121111111',
             'is_manager' => true
         ]);
+
+        User::factory()->create([
+            'name' => 'user',
+            'phone' => '09122222222',
+            'is_manager' => false
+        ]);
+
+        user::factory(10)->create();
     }
 }

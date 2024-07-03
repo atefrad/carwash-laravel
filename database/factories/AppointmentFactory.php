@@ -20,7 +20,7 @@ class AppointmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create(),
+            'user_id' => User::query()->inRandomOrder()->first(),
             'total_price' => rand(25000, 135000),
             'tracking_code' => rand(100000, 999999)
         ];
