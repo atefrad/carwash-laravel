@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('head-tag')
+    <title>Show profile</title>
+@endsection
+
 @section('content')
 
     <!-- Page Header Start -->

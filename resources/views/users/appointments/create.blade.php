@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('head-tag')
+    <title>Create new appointment</title>
+@endsection
+
 @section('content')
 
     @error('transaction')

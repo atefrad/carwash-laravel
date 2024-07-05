@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('head-tag')
+    <title> CarWash</title>
+@endsection
+
 @section('content')
 
 <!-- Carousel Start -->

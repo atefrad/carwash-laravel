@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('head-tag')
+    <title>Edit profile</title>
+@endsection
+
 @section('content')
 
     @if(session('status'))

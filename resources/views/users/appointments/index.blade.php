@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('head-tag')
+    <title>Appointments</title>
+@endsection
+
 @section('content')
 
     <div class="container">
